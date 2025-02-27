@@ -5,152 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4AM Solana Volume Signal Call Channel Profitability Dashboard</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f8ff;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-            min-width: 1024px; /* Default to desktop size */
-            overflow-x: auto;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        h1 .purple { color: #8e44ad; }
-        h1 .red { color: #e74c3c; }
-        h1 .green { color: #2ecc71; }
-
-        .controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .controls input, .controls button {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #3498db;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .controls button {
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .controls button:hover {
-            background-color: #2980b9;
-        }
-
-        #loading {
-            display: none;
-            text-align: center;
-            color: #3498db;
-            font-style: italic;
-        }
-
-        #data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        #data-table th, #data-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        #data-table th {
-            background-color: #3498db;
-            color: white;
-        }
-
-        #data-table tr.win {
-            background-color: #e6ffe6;
-        }
-
-        #data-table tr.loss {
-            background-color: #ffe6e6;
-        }
-
-        #stats {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 18px;
-            color: #2c3e50;
-        }
-
-        #pie-chart {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 20px auto;
-            height: 300px;
-        }
-
-        #bull-svg {
-            display: block;
-            margin: 50px auto;
-            max-width: 300px;
-            opacity: 0.8;
-        }
-
-        #pagination {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #pagination button {
-            padding: 8px 12px;
-            margin: 0 5px;
-            border: 1px solid #3498db;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-        }
-
-        #pagination button:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        footer a {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
+        /* Your existing styles unchanged */
+        body { font-family: 'Arial', sans-serif; background-color: #f0f8ff; margin: 0; padding: 20px; color: #333; min-width: 1024px; overflow-x: auto; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); animation: fadeIn 1s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        h1 { text-align: center; margin-bottom: 20px; }
+        h1 .purple { color: #8e44ad; } h1 .red { color: #e74c3c; } h1 .green { color: #2ecc71; }
+        .controls { text-align: center; margin-bottom: 20px; }
+        .controls input, .controls button { padding: 10px; margin: 5px; border: 1px solid #3498db; border-radius: 5px; font-size: 16px; }
+        .controls button { background-color: #3498db; color: white; cursor: pointer; transition: background-color 0.3s; }
+        .controls button:hover { background-color: #2980b9; }
+        #loading { display: none; text-align: center; color: #3498db; font-style: italic; }
+        #data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        #data-table th, #data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        #data-table th { background-color: #3498db; color: white; }
+        #data-table tr.win { background-color: #e6ffe6; }
+        #data-table tr.loss { background-color: #ffe6e6; }
+        #stats { text-align: center; margin-bottom: 20px; font-size: 18px; color: #2c3e50; }
+        #pie-chart { width: 100%; max-width: 500px; margin: 0 auto 20px auto; height: 300px; }
+        #bull-svg { display: block; margin: 50px auto; max-width: 300px; opacity: 0.8; }
+        #pagination { text-align: center; margin-top: 20px; }
+        #pagination button { padding: 8px 12px; margin: 0 5px; border: 1px solid #3498db; border-radius: 5px; background-color: #3498db; color: white; cursor: pointer; }
+        #pagination button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        footer { text-align: center; margin-top: 20px; font-size: 14px; color: #7f8c8d; }
+        footer a { color: #3498db; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -163,7 +42,7 @@
         <div class="controls">
             <input type="date" id="start-date" value="2025-01-01">
             <input type="date" id="end-date" value="2025-02-27">
-            <button onclick="refreshData()">Filter</button>
+            <button id="filter-button">Filter</button>
         </div>
         <div id="loading">Loading data...</div>
         <div id="stats">
@@ -191,9 +70,7 @@
     <footer>
         Developed by <a href="https://x.com/definerdguy01" target="_blank">DefiNerdGuy</a>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/db.js"></script>
-    <script src="/scripts.js"></script>
+    <script type="module" src="scripts.js"></script>
 </body>
 </html>

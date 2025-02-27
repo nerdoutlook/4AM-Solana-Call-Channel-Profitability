@@ -1,17 +1,23 @@
+import { dbData } from './db.js';
+
 let currentPage = 1;
 let totalPages = 1;
 
 function filterData(startDate, endDate, page = 1) {
+    if (!dbData) {
+        console.error("dbData is undefined - check db.js import");
+        return { data: [], wins: 0, losses: 0, total_pages: 1, current_page: 1 };
+    }
     const start = new Date(startDate).getTime();
-    const end = new Date(endDate).getTime() + 24 * 60 * 60 * 1000; // Include end day
-    const filtered = window.dbData
+    const end = new Date(endDate).getTime() + 24 * 60 * 60 * 1000;
+    const filtered = dbData
         .map(row => ({
-            date: row[1],        // Index 1: date
-            contract: row[2],    // Index 2: contract
-            first_reply: row[3], // Index 3: first_reply
-            first_reply_time: row[4], // Index 4: first_reply_time
-            final_reply: row[5], // Index 5: final_reply
-            final_reply_time: row[6]  // Index 6: final_reply_time
+            date: row[1],
+            contract: row[2],
+            first_reply: row[3],
+            first_reply_time: row[4],
+            final_reply: row[5],
+            final_reply_time: row[6]
         }))
         .filter(item => {
             const itemDate = new Date(item.date).getTime();
@@ -90,18 +96,22 @@ function updatePagination(current, total) {
     currentPage = current;
     const pagination = document.getElementById("pagination");
     pagination.innerHTML = `
-        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
+        <button id="prev-page" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
         <span>Page ${currentPage} of ${totalPages}</span>
-        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>Next</button>
+        <button id="next-page" ${currentPage === totalPages ? "disabled" : ""}>Next</button>
     `;
+
+    // Add event listeners after creating buttons
+    document.getElementById("prev-page").addEventListener("click", () => changePage(currentPage - 1));
+    document.getElementById("next-page").addEventListener("click", () => changePage(currentPage + 1));
 }
 
-function changePage(newPage) {
+async function changePage(newPage) {
     if (newPage < 1 || newPage > totalPages) return;
-    refreshData(newPage);
+    await refreshData(newPage);
 }
 
-function refreshData(page = 1) {
+async function refreshData(page = 1) {
     const startDate = document.getElementById("start-date").value;
     const endDate = document.getElementById("end-date").value;
     const loading = document.getElementById("loading");
@@ -125,4 +135,6 @@ function refreshData(page = 1) {
 window.onload = () => {
     document.getElementById("bull-svg").style.display = "block";
     refreshData();
+
+    document.getElementById("filter-button").addEventListener("click", () => refreshData(1));
 };
