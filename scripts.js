@@ -1,20 +1,17 @@
-import { dbData } from './db.js';
-
 let currentPage = 1;
 let totalPages = 1;
 
-// Simulate API filtering and pagination
 function filterData(startDate, endDate, page = 1) {
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime() + 24 * 60 * 60 * 1000; // Include end day
-    const filtered = dbData
+    const filtered = window.dbData
         .map(row => ({
-            date: row[0],
-            contract: row[1],
-            first_reply: row[2],
-            first_reply_time: row[3],
-            final_reply: row[4],
-            final_reply_time: row[5]
+            date: row[1],        // Index 1: date
+            contract: row[2],    // Index 2: contract
+            first_reply: row[3], // Index 3: first_reply
+            first_reply_time: row[4], // Index 4: first_reply_time
+            final_reply: row[5], // Index 5: final_reply
+            final_reply_time: row[6]  // Index 6: final_reply_time
         }))
         .filter(item => {
             const itemDate = new Date(item.date).getTime();
@@ -81,7 +78,9 @@ function updatePieChart(wins, losses) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { position: "top" } }
+            plugins: {
+                legend: { position: "top" }
+            }
         }
     });
 }
@@ -97,12 +96,12 @@ function updatePagination(current, total) {
     `;
 }
 
-async function changePage(newPage) {
+function changePage(newPage) {
     if (newPage < 1 || newPage > totalPages) return;
-    await refreshData(newPage);
+    refreshData(newPage);
 }
 
-async function refreshData(page = 1) {
+function refreshData(page = 1) {
     const startDate = document.getElementById("start-date").value;
     const endDate = document.getElementById("end-date").value;
     const loading = document.getElementById("loading");
