@@ -9,21 +9,58 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298, #8e44ad);
+            background: url('https://images.unsplash.com/photo-1464802686167-b939a6910659?q=80&w=1450&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #0a0a23;
             margin: 0;
-            padding: 20px;
-            color: #fff;
-            min-width: 1024px;
-            overflow-x: auto;
+            padding: 15px;
+            color: #e0e0ff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        @keyframes shooting-star {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(-100vw) translateY(100vh); opacity: 0; }
+        }
+        .shooting-star {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            box-shadow: 0 0 240px #fff, 0 0 450px #4ecdc4;
+            animation: shooting-star 1.5s linear infinite;
+            border-radius: 50%;
+        }
+        .shooting-star:nth-child(1) { top: 10%; left: 90%; animation-delay: 0s; }
+        .shooting-star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.3s; }
+        .shooting-star:nth-child(3) { top: 30%; left: 85%; animation-delay: 0.6s; }
+        .shooting-star:nth-child(4) { top: 15%; left: 95%; animation-delay: 0.9s; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        #rocket {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            top: 50px;
+            left: 50px;
+            cursor: move;
+            animation: bounce 1s infinite;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
+            background-color: rgba(10, 10, 35, 0.85);
+            padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
             animation: fadeIn 1s ease-in;
+            position: relative;
+            z-index: 1;
+            overflow-x: hidden;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
@@ -31,132 +68,182 @@
         }
         h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-weight: 600;
+            background: linear-gradient(45deg, #b388ff, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 5px rgba(180, 136, 255, 0.5);
         }
-        h1 .purple { color: #8e44ad; }
-        h1 .red { color: #e74c3c; }
-        h1 .green { color: #2ecc71; }
+        h1 .purple { color: inherit; }
+        h1 .red { color: inherit; }
+        h1 .green { color: inherit; }
         .controls {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            gap: 10px;
         }
         .controls-left {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .controls-right {
             display: flex;
             align-items: center;
+            margin-left: auto;
         }
         .controls input, .controls button {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #3498db;
+            padding: 8px;
+            margin: 0;
+            border: 1px solid #4ecdc4;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
+            background-color: #1a1a3d;
+            color: #e0e0ff;
         }
         .controls button {
-            background-color: #3498db;
-            color: white;
+            background-color: #4ecdc4;
+            color: #0a0a23;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
         }
         .controls button:hover {
-            background-color: #2980b9;
+            background-color: #45b7b0;
             transform: scale(1.05);
         }
         #dark-mode-toggle {
-            width: 50px; /* Increased from 40px */
-            height: 25px; /* Increased from 20px */
-            background: #ccc;
+            width: 50px;
+            height: 25px;
+            background: #555;
             border: none;
-            border-radius: 25px; /* Adjusted to match height */
+            border-radius: 25px;
             position: relative;
             cursor: pointer;
-            padding: 0;
-            margin-left: 10px;
+            padding: 6px;
+            margin: 0 15px 0 0;
         }
         #dark-mode-toggle::before {
             content: '';
-            width: 20px; /* Increased from 16px */
-            height: 20px; /* Increased from 16px */
-            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="yellow"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m-9.66-13.66l1.41-1.41m16.24 16.24l-1.41-1.41M1 12h2m18 0h2m-13.66-9.66l1.41 1.41m16.24-1.41l-1.41 1.41"/></svg>') no-repeat center;
-            background-size: 14px; /* Slightly larger icon */
+            width: 20px;
+            height: 20px;
+            background: #e0e0ff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="yellow"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m-9.66-13.66l1.41-1.41m16.24 16.24l-1.41-1.41M1 12h2m18 0h2m-13.66-9.66l1.41 1.41m16.24-1.41l-1.41 1.41"/></svg>') no-repeat center;
+            background-size: 14px;
             border-radius: 50%;
             position: absolute;
-            top: 2.5px; /* Adjusted centering */
-            left: 2.5px; /* Adjusted centering */
+            top: 2.5px;
+            left: 2.5px;
             transition: transform 0.3s ease;
         }
         .dark-mode #dark-mode-toggle {
-            background: #444;
+            background: #b388ff;
         }
         .dark-mode #dark-mode-toggle::before {
-            transform: translateX(25px); /* Adjusted for new width */
-            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>') no-repeat center;
+            transform: translateX(25px);
+            background: #e0e0ff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>') no-repeat center;
             background-size: 14px;
         }
         #loading {
             display: none;
             text-align: center;
-            color: #3498db;
+            color: #4ecdc4;
             font-style: italic;
+        }
+        #entry-count-top, #entry-count-bottom {
+            text-align: center;
+            font-size: 12px;
+            color: #b388ff;
+            margin: 10px 0;
+        }
+        #data-table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(78, 205, 196, 0.1);
         }
         #data-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
         #data-table th, #data-table td {
-            padding: 12px;
+            padding: 12px 16px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #4ecdc4;
+            vertical-align: middle;
         }
         #data-table th {
-            background-color: #3498db;
-            color: white;
+            background-color: #2a2a5a;
+            color: #e0e0ff;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            border-bottom: 2px solid #4ecdc4;
         }
+        #data-table th:nth-child(1), #data-table td:nth-child(1) { width: 25%; min-width: 120px; }
+        #data-table th:nth-child(2), #data-table td:nth-child(2) { width: 20%; min-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #data-table th:nth-child(3), #data-table td:nth-child(3) { width: 15%; min-width: 80px; }
+        #data-table th:nth-child(4), #data-table td:nth-child(4) { width: 20%; min-width: 100px; }
+        #data-table th:nth-child(5), #data-table td:nth-child(5) { width: 15%; min-width: 80px; }
+        #data-table th:nth-child(6), #data-table td:nth-child(6) { width: 20%; min-width: 100px; }
         #data-table tr:hover {
-            background-color: rgba(52, 152, 219, 0.1);
+            background-color: rgba(78, 205, 196, 0.15);
             transition: background-color 0.3s ease;
         }
-        #data-table tr.win { background-color: #e6ffe6; }
-        #data-table tr.loss { background-color: #ffe6e6; }
+        #data-table tr td {
+            background-color: rgba(20, 20, 50, 0.9);
+            border-right: 1px solid rgba(78, 205, 196, 0.2);
+        }
+        #data-table tr td:last-child {
+            border-right: none;
+        }
         #bull-svg {
             display: block;
-            margin: 50px auto;
-            max-width: 300px;
+            margin: 30px auto;
+            max-width: 200px;
             opacity: 0.8;
+            stroke: #e0e0ff;
         }
         #pagination {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         #pagination button {
             padding: 8px 12px;
             margin: 0 5px;
-            border: 1px solid #3498db;
+            border: 1px solid #4ecdc4;
             border-radius: 5px;
-            background-color: #3498db;
-            color: white;
+            background-color: #4ecdc4;
+            color: #0a0a23;
             cursor: pointer;
         }
         #pagination button:disabled {
-            background-color: #bdc3c7;
+            background-color: #555;
             cursor: not-allowed;
         }
         footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #7f8c8d;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #e0e0ff;
+            position: relative;
+        }
+        footer::before {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 1px;
+            background: #4ecdc4;
+            margin: 10px auto;
         }
         footer a {
-            color: #3498db;
+            color: #ffffff;
             text-decoration: none;
         }
         footer a:hover {
@@ -164,79 +251,209 @@
         }
         #table-description {
             text-align: left;
-            font-size: 7px;
-            color: #2c3e50;
+            font-size: 8px;
+            color: #e0e0ff;
             margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            background: rgba(10, 10, 35, 0.7);
+            padding: 8px;
+            border: 1px solid #4ecdc4;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.5;
+            box-shadow: 0 0 5px rgba(78, 205, 196, 0.3);
         }
         #table-description ul {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 15px;
         }
         #table-description .purple-bullet {
-            color: #8e44ad;
+            color: #b388ff;
         }
         #table-description .footer-text {
             font-family: 'Lato', sans-serif;
             font-weight: 300;
             font-style: italic;
             margin-top: 5px;
-            display: inline;
+            display: block;
         }
         #table-description .footer-text a {
-            color: #3498db;
+            color: #4ecdc4;
         }
         #table-description #ca-filter {
-            padding: 5px;
-            font-size: 7px;
+            padding: 6px;
+            font-size: 8px;
             margin-left: 10px;
-            width: 150px;
+            width: 180px;
+            background: #1a1a3d;
+            border: 1px solid #4ecdc4;
         }
         .dark-mode body {
-            background: #1a1a1a;
-            color: #fff;
+            background: #0a0a23;
+            color: #e0e0ff;
         }
         .dark-mode .container {
-            background: #2d2d2d;
+            background: rgba(20, 20, 50, 0.9);
         }
         .dark-mode #data-table th {
-            background-color: #1e90ff;
+            background-color: #4ecdc4;
+            color: #0a0a23;
         }
         .dark-mode #data-table tr:hover {
-            background-color: rgba(30, 144, 255, 0.1);
+            background-color: rgba(78, 205, 196, 0.2);
         }
-        .dark-mode #data-table tr.win {
-            background-color: #2f4f4f;
+        .dark-mode #data-table td {
+            border-bottom: 1px solid #b388ff;
+            background-color: rgba(30, 30, 60, 0.9);
+            border-right: 1px solid rgba(180, 136, 255, 0.2);
         }
-        .dark-mode #data-table tr.loss {
-            background-color: #4b2e2e;
+        .dark-mode #data-table td:last-child {
+            border-right: none;
         }
         .dark-mode #table-description {
-            color: #d3d3d3;
+            color: #e0e0ff;
+            background: rgba(20, 20, 50, 0.9);
+            border: 1px solid #b388ff;
+            box-shadow: 0 0 5px rgba(180, 136, 255, 0.3);
+        }
+        .dark-mode #table-description .footer-text a {
+            color: #ff6b6b;
+        }
+        .dark-mode footer a {
+            color: #ffffff;
+        }
+        .dark-mode input, .dark-mode button {
+            background-color: #2a2a5a;
+            border-color: #b388ff;
+        }
+        .dark-mode .controls button {
+            background-color: #b388ff;
+            color: #0a0a23;
+        }
+        .dark-mode .controls button:hover {
+            background-color: #a172ff;
+        }
+        .dark-mode #pagination button {
+            border-color: #b388ff;
+            background-color: #b388ff;
+        }
+        .dark-mode #pagination button:disabled {
+            background-color: #666;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.4em;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 15px;
+            }
+            .controls-left, .controls-right {
+                width: 100%;
+                justify-content: center;
+            }
+            .controls-right {
+                margin-left: 0;
+                order: -1;
+            }
+            .controls input, .controls button {
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 12px;
+                padding: 6px;
+            }
+            #data-table-wrapper {
+                -webkit-overflow-scrolling: touch;
+            }
+            #data-table th, #data-table td {
+                padding: 8px 12px;
+                font-size: 12px;
+                text-align: justify;
+            }
+            #table-description {
+                font-size: 10px;
+                padding: 6px;
+            }
+            #table-description ul {
+                padding-left: 10px;
+            }
+            #table-description #ca-filter {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 5px;
+                font-size: 10px;
+                padding: 4px;
+            }
+            #bull-svg {
+                max-width: 150px;
+                margin: 20px auto;
+            }
+            #entry-count-top, #entry-count-bottom {
+                font-size: 10px;
+            }
+            footer {
+                font-size: 10px;
+            }
+            footer::before {
+                width: 40px;
+                margin: 5px auto;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.1em;
+            }
+            .controls input, .controls button {
+                font-size: 10px;
+                padding: 5px;
+            }
+            #data-table th, #data-table td {
+                padding: 6px 10px;
+                font-size: 10px;
+            }
+            #table-description {
+                font-size: 9px;
+            }
+            #table-description #ca-filter {
+                font-size: 9px;
+            }
+            #bull-svg {
+                max-width: 120px;
+            }
+            #entry-count-top, #entry-count-bottom {
+                font-size: 8px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <lottie-player id="rocket" src="https://cdn.iconscout.com/lottie/premium/preview/rocket-6849498-5585118.json" background="transparent" speed="1" style="position: fixed; width: 40px; height: 40px; top: 50px; left: 50px; z-index: 10; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);" loop autoplay></lottie-player>
     <div class="container">
         <h1>
             <span class="purple">4AM Solana Volume Signal Call Channel</span>
             <span class="red"> Profitability</span>
             <span class="green"> Dashboard</span>
         </h1>
+        <div class="controls-right">
+            <button id="dark-mode-toggle"></button>
+        </div>
         <div class="controls">
             <div class="controls-left">
                 <input type="date" id="start-date" value="2025-01-01">
                 <input type="date" id="end-date" value="2025-02-27">
                 <button id="filter-button">Filter</button>
             </div>
-            <div class="controls-right">
-                <button id="dark-mode-toggle"></button>
-            </div>
         </div>
         <div id="loading">Loading data...</div>
-        <svg id="bull-svg" viewBox="0 0 24 24" fill="none" stroke="#2c3e50" stroke-width="2">
+        <svg id="bull-svg" viewBox="0 0 24 24" fill="none" stroke="#e0e0ff" stroke-width="2">
             <path d="M12 2l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6l3-6z"/>
         </svg>
         <div id="table-description">
@@ -244,7 +461,7 @@
                 <li>First Profit shows the initial price increase.</li>
                 <li>Time of Increase indicates when it occurred.</li>
                 <li>Final Profit reflects the highest recorded increase with its corresponding time.</li>
-                <li>Data present was captured between 27/01/25 and 25/02/25.</li>
+                <li>Data present was captured between 25/02/25 and 27/02/25.</li>
                 <li>Time is shown in UTC.</li>
                 <li class="purple-bullet">Search a contract address of your most profitable trade.</li>
             </ul>
@@ -253,24 +470,75 @@
                 <input type="text" id="ca-filter" placeholder="Search CA">
             </div>
         </div>
-        <table id="data-table">
-            <thead>
-                <tr>
-                    <th>Date of 1st Call</th>
-                    <th>CA</th>
-                    <th>First Profit</th>
-                    <th>Time of Increase</th>
-                    <th>Final Profit</th>
-                    <th>Time of Increase</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div id="entry-count-top"></div>
+        <div id="data-table-wrapper">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Date of 1st Call</th>
+                        <th>CA</th>
+                        <th>First Profit</th>
+                        <th>Time of Increase</th>
+                        <th>Final Profit</th>
+                        <th>Time of Increase</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="entry-count-bottom"></div>
         <div id="pagination"></div>
     </div>
     <footer>
         Developed by <a href="https://x.com/definerdguy01" target="_blank">DefiNerdGuy</a>
     </footer>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script type="module" src="scripts.js"></script>
+    <script>
+        const rocket = document.getElementById('rocket');
+        let isDragging = false;
+        let currentX, currentY, initialX, initialY;
+
+        rocket.addEventListener('mousedown', startDragging);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDragging);
+        rocket.addEventListener('touchstart', startDragging);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('touchend', stopDragging);
+
+        function startDragging(e) {
+            isDragging = true;
+            if (e.type === 'touchstart') {
+                initialX = e.touches[0].clientX - currentX;
+                initialY = e.touches[0].clientY - currentY;
+            } else {
+                initialX = e.clientX - currentX;
+                initialY = e.clientY - currentY;
+            }
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX - initialX;
+                currentY = e.touches[0].clientY - initialY;
+            } else {
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+            }
+            rocket.style.left = `${currentX}px`;
+            rocket.style.top = `${currentY}px`;
+        }
+
+        function stopDragging() {
+            isDragging = false;
+        }
+
+        currentX = 50;
+        currentY = 50;
+        rocket.style.left = `${currentX}px`;
+        rocket.style.top = `${currentY}px`;
+    </script>
 </body>
 </html>
