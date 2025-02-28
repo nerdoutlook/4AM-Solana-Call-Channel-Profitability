@@ -13,10 +13,24 @@
             background-size: cover;
             background-color: #0a0a23;
             margin: 0;
-            padding: 15px;
+            padding: 0;
             color: #e0e0ff;
             position: relative;
-            overflow-x: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #content-wrapper {
+            padding: 15px;
+            position: relative;
+            z-index: 1;
+            overflow-x: hidden; /* Moved from container */
+        }
+        html.popup-active {
+            overflow-y: hidden; /* Prevent body scroll when popup is active */
+        }
+        #content-wrapper.popup-active {
+            overflow-y: auto; /* Allow content to scroll */
+            height: 100vh; /* Ensure full height for scrolling */
         }
         @keyframes shooting-star {
             0% { transform: translateX(0) translateY(0); opacity: 1; }
@@ -36,19 +50,69 @@
         .shooting-star:nth-child(3) { top: 30%; left: 85%; animation-delay: 0.6s; }
         .shooting-star:nth-child(4) { top: 15%; left: 95%; animation-delay: 0.9s; }
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0) rotate(2deg); }
+            50% { transform: translateY(-20px) rotate(-2deg); }
         }
-        #rocket {
+        @keyframes flicker {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        #jeet-bot {
             position: fixed;
-            width: 40px;
-            height: 40px;
-            top: 50px;
-            left: 50px;
-            cursor: move;
-            animation: bounce 1s infinite;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            animation: bounce 1s infinite ease-in-out;
             z-index: 10;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+            -webkit-text-stroke: 1px #b388ff; /* Purple outline */
+            text-shadow: 0 0 5px rgba(179, 136, 255, 0.5);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #jeet-bot span {
+            display: block;
+        }
+        #jeet-bot:hover {
+            animation: flicker 0.3s infinite alternate;
+        }
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 35, 0.9);
+            border: 2px solid #4ecdc4;
+            border-radius: 10px;
+            padding: 20px;
+            color: #e0e0ff;
+            z-index: 100;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
+            width: 90%;
+            max-width: 800px; /* Larger on desktop */
+            text-align: center;
+            font-size: 18px; /* Slightly larger text */
+            line-height: 1.5;
+        }
+        #popup.show {
+            display: block;
+        }
+        #popup a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+        #popup a:hover {
+            text-decoration: underline;
+        }
+        .blur {
+            filter: blur(5px);
+            pointer-events: none;
         }
         .container {
             max-width: 1200px;
@@ -60,7 +124,8 @@
             animation: fadeIn 1s ease-in;
             position: relative;
             z-index: 1;
-            overflow-x: hidden;
+            width: 100%;
+            box-sizing: border-box;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
@@ -287,7 +352,7 @@
             background: #1a1a3d;
             border: 1px solid #4ecdc4;
         }
-        .dark-mode body {
+        .dark-mode #content-wrapper {
             background: #0a0a23;
             color: #e0e0ff;
         }
@@ -338,6 +403,18 @@
         }
         .dark-mode #pagination button:disabled {
             background-color: #666;
+        }
+        .dark-mode #jeet-bot {
+            -webkit-text-stroke: 1px #b388ff;
+            color: #fff;
+        }
+        .dark-mode #popup {
+            background: rgba(20, 20, 50, 0.9);
+            border-color: #b388ff;
+            box-shadow: 0 0 15px rgba(180, 136, 255, 0.3);
+        }
+        .dark-mode #popup a {
+            color: #ff6b6b;
         }
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -402,6 +479,15 @@
                 width: 40px;
                 margin: 5px auto;
             }
+            #jeet-bot {
+                font-size: 20px;
+                left: 10px;
+            }
+            #popup {
+                padding: 15px;
+                font-size: 14px;
+                max-width: 300px;
+            }
         }
         @media (max-width: 480px) {
             h1 {
@@ -427,94 +513,118 @@
             #entry-count-top, #entry-count-bottom {
                 font-size: 8px;
             }
+            #jeet-bot {
+                font-size: 18px;
+            }
+            #popup {
+                padding: 10px;
+                font-size: 12px;
+                max-width: 250px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <lottie-player id="rocket" src="https://cdn.iconscout.com/lottie/premium/preview/rocket-6849498-5585118.json" background="transparent" speed="1" style="position: fixed; width: 40px; height: 40px; top: 50px; left: 50px; z-index: 10; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);" loop autoplay></lottie-player>
-    <div class="container">
-        <h1>
-            <span class="purple">4AM Solana Volume Signal Call Channel</span>
-            <span class="red"> Profitability</span>
-            <span class="green"> Dashboard</span>
-        </h1>
-        <div class="controls-right">
-            <button id="dark-mode-toggle"></button>
-        </div>
-        <div class="controls">
-            <div class="controls-left">
-                <input type="date" id="start-date" value="2025-01-01">
-                <input type="date" id="end-date" value="2025-02-27">
-                <button id="filter-button">Filter</button>
+    <div id="content-wrapper">
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="container">
+            <h1>
+                <span class="purple">4AM Solana Volume Signal Call Channel</span>
+                <span class="red"> Profitability</span>
+                <span class="green"> Dashboard</span>
+            </h1>
+            <div class="controls-right">
+                <button id="dark-mode-toggle"></button>
             </div>
-        </div>
-        <div id="loading">Loading data...</div>
-        <svg id="bull-svg" viewBox="0 0 24 24" fill="none" stroke="#e0e0ff" stroke-width="2">
-            <path d="M12 2l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6l3-6z"/>
-        </svg>
-        <div id="table-description">
-            <ul>
-                <li>First Profit shows the initial price increase.</li>
-                <li>Time of Increase indicates when it occurred.</li>
-                <li>Final Profit reflects the highest recorded increase with its corresponding time.</li>
-                <li>Data present was captured between 27/01/25 and 25/02/25.</li>
-                <li>Time is shown in UTC.</li>
-                <li class="purple-bullet">Search a contract address of your most profitable trade.</li>
-            </ul>
-            <div class="footer-text">
-                Data was extracted from <a href="https://t.me/signalsolanaby4am" target="_blank">4AM Solana Call Channel</a>.
-                <input type="text" id="ca-filter" placeholder="Search CA">
+            <div class="controls">
+                <div class="controls-left">
+                    <input type="date" id="start-date" value="2025-01-01">
+                    <input type="date" id="end-date" value="2025-02-27">
+                    <button id="filter-button">Filter</button>
+                </div>
             </div>
+            <div id="loading">Loading data...</div>
+            <svg id="bull-svg" viewBox="0 0 24 24" fill="none" stroke="#e0e0ff" stroke-width="2">
+                <path d="M12 2l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6l3-6z"/>
+            </svg>
+            <div id="table-description">
+                <ul>
+                    <li>First Profit shows the initial price increase.</li>
+                    <li>Time of Increase indicates when it occurred.</li>
+                    <li>Final Profit reflects the highest recorded increase with its corresponding time.</li>
+                    <li>Data present was captured between 25/02/25 and 27/02/25.</li>
+                    <li>Time is shown in UTC.</li>
+                    <li class="purple-bullet">Search a contract address of your most profitable trade.</li>
+                </ul>
+                <div class="footer-text">
+                    Data was extracted from <a href="https://t.me/signalsolanaby4am" target="_blank">4AM Solana Call Channel</a>.
+                    <input type="text" id="ca-filter" placeholder="Search CA">
+                </div>
+            </div>
+            <div id="entry-count-top"></div>
+            <div id="data-table-wrapper">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date of 1st Call</th>
+                            <th>CA</th>
+                            <th>First Profit</th>
+                            <th>Time of Increase</th>
+                            <th>Final Profit</th>
+                            <th>Time of Increase</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="entry-count-bottom"></div>
+            <div id="pagination"></div>
         </div>
-        <div id="entry-count-top"></div>
-        <div id="data-table-wrapper">
-            <table id="data-table">
-                <thead>
-                    <tr>
-                        <th>Date of 1st Call</th>
-                        <th>CA</th>
-                        <th>First Profit</th>
-                        <th>Time of Increase</th>
-                        <th>Final Profit</th>
-                        <th>Time of Increase</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div id="entry-count-bottom"></div>
-        <div id="pagination"></div>
+        <footer>
+            Developed by <a href="https://x.com/definerdguy01" target="_blank">DefiNerdGuy</a>
+        </footer>
     </div>
-    <footer>
-        Developed by <a href="https://x.com/definerdguy01" target="_blank">DefiNerdGuy</a>
-    </footer>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <div id="jeet-bot">
+        <span>Jeet</span>
+        <span>Bot</span>
+    </div>
+    <div id="popup">
+        <p>Take advantage of all this opportunity with a bot that trades every call and sells at 2x.</p>
+        <p>Trades like this multiple times a day leaves you in profit no matter market conditions.</p>
+        <p><a href="https://x.com/definerdguy01" target="_blank">Learn more</a></p>
+    </div>
     <script type="module" src="scripts.js"></script>
     <script>
-        const rocket = document.getElementById('rocket');
+        const jeetBot = document.getElementById('jeet-bot');
+        const popup = document.getElementById('popup');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const html = document.documentElement;
+
         let isDragging = false;
         let currentX, currentY, initialX, initialY;
+        let clickTimeout;
 
-        rocket.addEventListener('mousedown', startDragging);
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', stopDragging);
-        rocket.addEventListener('touchstart', startDragging);
-        document.addEventListener('touchmove', drag);
-        document.addEventListener('touchend', stopDragging);
+        jeetBot.addEventListener('mousedown', startDragging);
+        jeetBot.addEventListener('mousemove', drag);
+        jeetBot.addEventListener('mouseup', stopDraggingOrClick);
+        jeetBot.addEventListener('touchstart', startDragging, { passive: false });
+        jeetBot.addEventListener('touchmove', drag, { passive: false });
+        jeetBot.addEventListener('touchend', stopDraggingOrClick);
 
         function startDragging(e) {
             isDragging = true;
             if (e.type === 'touchstart') {
                 initialX = e.touches[0].clientX - currentX;
                 initialY = e.touches[0].clientY - currentY;
+                e.preventDefault();
             } else {
                 initialX = e.clientX - currentX;
                 initialY = e.clientY - currentY;
             }
+            clearTimeout(clickTimeout);
         }
 
         function drag(e) {
@@ -527,18 +637,41 @@
                 currentX = e.clientX - initialX;
                 currentY = e.clientY - initialY;
             }
-            rocket.style.left = `${currentX}px`;
-            rocket.style.top = `${currentY}px`;
+            jeetBot.style.left = `${currentX}px`;
+            jeetBot.style.top = `${currentY}px`;
         }
 
-        function stopDragging() {
+        function stopDraggingOrClick(e) {
+            if (!isDragging) return;
             isDragging = false;
+
+            clickTimeout = setTimeout(() => {
+                if (!isDragging) {
+                    togglePopup();
+                }
+            }, 200);
         }
 
-        currentX = 50;
-        currentY = 50;
-        rocket.style.left = `${currentX}px`;
-        rocket.style.top = `${currentY}px`;
+        function togglePopup() {
+            popup.classList.toggle('show');
+            contentWrapper.classList.toggle('blur');
+            html.classList.toggle('popup-active'); // Toggle scroll lock
+        }
+
+        // Close popup when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!jeetBot.contains(e.target) && !popup.contains(e.target) && popup.classList.contains('show')) {
+                popup.classList.remove('show');
+                contentWrapper.classList.remove('blur');
+                html.classList.remove('popup-active');
+            }
+        });
+
+        // Initial position on left-hand side
+        currentX = 20;
+        currentY = window.innerHeight / 2;
+        jeetBot.style.left = `${currentX}px`;
+        jeetBot.style.top = `${currentY}px`;
     </script>
 </body>
 </html>
