@@ -5,8 +5,8 @@ let totalPages = 1;
 
 function filterData(startDate, endDate, caFilter = '', page = 1) {
     if (!dbData) {
-        console.error("dbData is undefined - check db.js import");
-        return { data: [], total_pages: 1, current_page: 1 };
+        console.error("dbData is undefined - ensure db.js is correctly loaded and exported");
+        return { data: [], total_pages: 1, current_page: 1, total_entries: 0 };
     }
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime() + 24 * 60 * 60 * 1000;
@@ -26,7 +26,7 @@ function filterData(startDate, endDate, caFilter = '', page = 1) {
             return matchesDate && matchesCA;
         });
 
-    const pageSize = 100;
+    const pageSize = 25; // Reduced from 100
     const startIdx = (page - 1) * pageSize;
     const endIdx = startIdx + pageSize;
     const paginatedData = filtered.slice(startIdx, endIdx);
@@ -34,7 +34,8 @@ function filterData(startDate, endDate, caFilter = '', page = 1) {
     return {
         data: paginatedData,
         total_pages: Math.ceil(filtered.length / pageSize),
-        current_page: page
+        current_page: page,
+        total_entries: filtered.length
     };
 }
 
@@ -43,7 +44,6 @@ function updateTable(data) {
     tbody.innerHTML = "";
     data.forEach(item => {
         const row = document.createElement("tr");
-        row.className = item.first_profit ? "win" : "loss";
         row.innerHTML = `
             <td>${item.date}</td>
             <td>${item.ca}</td>
@@ -70,6 +70,14 @@ function updatePagination(current, total) {
     document.getElementById("next-page").addEventListener("click", () => changePage(currentPage + 1));
 }
 
+function updateEntryCount(totalEntries) {
+    const entryCountTop = document.getElementById("entry-count-top");
+    const entryCountBottom = document.getElementById("entry-count-bottom");
+    const text = `Showing ${totalEntries} entries`;
+    entryCountTop.textContent = text;
+    entryCountBottom.textContent = text;
+}
+
 async function changePage(newPage) {
     if (newPage < 1 || newPage > totalPages) return;
     await refreshData(newPage);
@@ -89,6 +97,7 @@ async function refreshData(page = 1) {
     if (result) {
         updateTable(result.data);
         updatePagination(result.current_page, result.total_pages);
+        updateEntryCount(result.total_entries);
         bullSvg.style.display = "none";
     }
 
