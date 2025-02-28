@@ -4,32 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4AM Solana Volume Signal Call Channel Profitability Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
     <style>
-        /* Your existing styles unchanged */
-        body { font-family: 'Arial', sans-serif; background-color: #f0f8ff; margin: 0; padding: 20px; color: #333; min-width: 1024px; overflow-x: auto; }
-        .container { max-width: 1200px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); animation: fadeIn 1s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        h1 { text-align: center; margin-bottom: 20px; }
-        h1 .purple { color: #8e44ad; } h1 .red { color: #e74c3c; } h1 .green { color: #2ecc71; }
-        .controls { text-align: center; margin-bottom: 20px; }
-        .controls input, .controls button { padding: 10px; margin: 5px; border: 1px solid #3498db; border-radius: 5px; font-size: 16px; }
-        .controls button { background-color: #3498db; color: white; cursor: pointer; transition: background-color 0.3s; }
-        .controls button:hover { background-color: #2980b9; }
-        #loading { display: none; text-align: center; color: #3498db; font-style: italic; }
-        #data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        #data-table th, #data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        #data-table th { background-color: #3498db; color: white; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298, #8e44ad);
+            margin: 0;
+            padding: 20px;
+            color: #fff;
+            min-width: 1024px;
+            overflow-x: auto;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        h1 .purple { color: #8e44ad; }
+        h1 .red { color: #e74c3c; }
+        h1 .green { color: #2ecc71; }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .controls-left {
+            display: flex;
+            align-items: center;
+        }
+        .controls-right {
+            display: flex;
+            align-items: center;
+        }
+        .controls input, .controls button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .controls button {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .controls button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        #dark-mode-toggle {
+            width: 50px; /* Increased from 40px */
+            height: 25px; /* Increased from 20px */
+            background: #ccc;
+            border: none;
+            border-radius: 25px; /* Adjusted to match height */
+            position: relative;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+        #dark-mode-toggle::before {
+            content: '';
+            width: 20px; /* Increased from 16px */
+            height: 20px; /* Increased from 16px */
+            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="yellow"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m-9.66-13.66l1.41-1.41m16.24 16.24l-1.41-1.41M1 12h2m18 0h2m-13.66-9.66l1.41 1.41m16.24-1.41l-1.41 1.41"/></svg>') no-repeat center;
+            background-size: 14px; /* Slightly larger icon */
+            border-radius: 50%;
+            position: absolute;
+            top: 2.5px; /* Adjusted centering */
+            left: 2.5px; /* Adjusted centering */
+            transition: transform 0.3s ease;
+        }
+        .dark-mode #dark-mode-toggle {
+            background: #444;
+        }
+        .dark-mode #dark-mode-toggle::before {
+            transform: translateX(25px); /* Adjusted for new width */
+            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>') no-repeat center;
+            background-size: 14px;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            color: #3498db;
+            font-style: italic;
+        }
+        #data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        #data-table th, #data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        #data-table th {
+            background-color: #3498db;
+            color: white;
+        }
+        #data-table tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            transition: background-color 0.3s ease;
+        }
         #data-table tr.win { background-color: #e6ffe6; }
         #data-table tr.loss { background-color: #ffe6e6; }
-        #stats { text-align: center; margin-bottom: 20px; font-size: 18px; color: #2c3e50; }
-        #pie-chart { width: 100%; max-width: 500px; margin: 0 auto 20px auto; height: 300px; }
-        #bull-svg { display: block; margin: 50px auto; max-width: 300px; opacity: 0.8; }
-        #pagination { text-align: center; margin-top: 20px; }
-        #pagination button { padding: 8px 12px; margin: 0 5px; border: 1px solid #3498db; border-radius: 5px; background-color: #3498db; color: white; cursor: pointer; }
-        #pagination button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-        footer { text-align: center; margin-top: 20px; font-size: 14px; color: #7f8c8d; }
-        footer a { color: #3498db; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
+        #bull-svg {
+            display: block;
+            margin: 50px auto;
+            max-width: 300px;
+            opacity: 0.8;
+        }
+        #pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+        #pagination button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        #table-description {
+            text-align: left;
+            font-size: 7px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        #table-description ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        #table-description .purple-bullet {
+            color: #8e44ad;
+        }
+        #table-description .footer-text {
+            font-family: 'Lato', sans-serif;
+            font-weight: 300;
+            font-style: italic;
+            margin-top: 5px;
+            display: inline;
+        }
+        #table-description .footer-text a {
+            color: #3498db;
+        }
+        #table-description #ca-filter {
+            padding: 5px;
+            font-size: 7px;
+            margin-left: 10px;
+            width: 150px;
+        }
+        .dark-mode body {
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .dark-mode .container {
+            background: #2d2d2d;
+        }
+        .dark-mode #data-table th {
+            background-color: #1e90ff;
+        }
+        .dark-mode #data-table tr:hover {
+            background-color: rgba(30, 144, 255, 0.1);
+        }
+        .dark-mode #data-table tr.win {
+            background-color: #2f4f4f;
+        }
+        .dark-mode #data-table tr.loss {
+            background-color: #4b2e2e;
+        }
+        .dark-mode #table-description {
+            color: #d3d3d3;
+        }
     </style>
 </head>
 <body>
@@ -40,27 +226,42 @@
             <span class="green"> Dashboard</span>
         </h1>
         <div class="controls">
-            <input type="date" id="start-date" value="2025-01-01">
-            <input type="date" id="end-date" value="2025-02-27">
-            <button id="filter-button">Filter</button>
+            <div class="controls-left">
+                <input type="date" id="start-date" value="2025-01-01">
+                <input type="date" id="end-date" value="2025-02-27">
+                <button id="filter-button">Filter</button>
+            </div>
+            <div class="controls-right">
+                <button id="dark-mode-toggle"></button>
+            </div>
         </div>
         <div id="loading">Loading data...</div>
-        <div id="stats">
-            Wins: <span id="wins">0</span> | Losses: <span id="losses">0</span>
-        </div>
-        <div id="pie-chart"></div>
         <svg id="bull-svg" viewBox="0 0 24 24" fill="none" stroke="#2c3e50" stroke-width="2">
             <path d="M12 2l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6l3-6z"/>
         </svg>
+        <div id="table-description">
+            <ul>
+                <li>First Profit shows the initial price increase.</li>
+                <li>Time of Increase indicates when it occurred.</li>
+                <li>Final Profit reflects the highest recorded increase with its corresponding time.</li>
+                <li>Data present was captured between 27/01/25 and 25/02/25.</li>
+                <li>Time is shown in UTC.</li>
+                <li class="purple-bullet">Search a contract address of your most profitable trade.</li>
+            </ul>
+            <div class="footer-text">
+                Data was extracted from <a href="https://t.me/signalsolanaby4am" target="_blank">4AM Solana Call Channel</a>.
+                <input type="text" id="ca-filter" placeholder="Search CA">
+            </div>
+        </div>
         <table id="data-table">
             <thead>
                 <tr>
                     <th>Date of 1st Call</th>
-                    <th>Contract</th>
-                    <th>First Reply</th>
-                    <th>First Reply Time</th>
-                    <th>Final Reply</th>
-                    <th>Final Reply Time</th>
+                    <th>CA</th>
+                    <th>First Profit</th>
+                    <th>Time of Increase</th>
+                    <th>Final Profit</th>
+                    <th>Time of Increase</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -70,7 +271,6 @@
     <footer>
         Developed by <a href="https://x.com/definerdguy01" target="_blank">DefiNerdGuy</a>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="scripts.js"></script>
 </body>
 </html>
